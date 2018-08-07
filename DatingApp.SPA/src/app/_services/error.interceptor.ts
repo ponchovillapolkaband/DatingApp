@@ -1,14 +1,24 @@
 import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse, HttpEvent, HTTP_INTERCEPTORS } from '@angular/common/http';
+import {
+    HttpInterceptor,
+    HttpHandler,
+    HttpRequest,
+    HttpErrorResponse,
+    HttpEvent,
+    HTTP_INTERCEPTORS
+} from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { SERVER_TRANSITION_PROVIDERS } from '@angular/platform-browser/src/browser/server-transition';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
-    intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    intercept(
+        req: HttpRequest<any>,
+        next: HttpHandler
+    ): Observable<HttpEvent<any>> {
         return next.handle(req).pipe(
-            catchError( error => {
+            catchError(error => {
                 if (error instanceof HttpErrorResponse) {
                     if (error.status === 401) {
                         return throwError(error.statusText);
@@ -38,4 +48,4 @@ export const ErrorInterceptorProvider = {
     provide: HTTP_INTERCEPTORS,
     useClass: ErrorInterceptor,
     multi: true
-}
+};
